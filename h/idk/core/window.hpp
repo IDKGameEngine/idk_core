@@ -1,5 +1,7 @@
 #pragma once
 
+#include "idk/core/type.hpp"
+
 
 namespace idk::core
 {
@@ -10,7 +12,7 @@ namespace idk::core
         int height;
     };
 
-    class IWindow
+    class IWindow: public idk::NonCopyable
     {
     public:
         virtual ~IWindow() = default;
