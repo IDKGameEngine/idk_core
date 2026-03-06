@@ -11,7 +11,6 @@ idk::core::ServiceManager::ServiceManager()
 
 }
 
-
 int idk::core::ServiceManager::_typeIdxToArrayIdx(idk::idtype typeidx)
 {
     idk::idtype idx = typeidx - typeIdxBase_;
@@ -23,7 +22,6 @@ int idk::core::ServiceManager::_typeIdxToArrayIdx(idk::idtype typeidx)
 
     return idx;
 }
-
 
 void idk::core::ServiceManager::_shutdownAll()
 {
@@ -46,8 +44,6 @@ void idk::core::ServiceManager::_shutdownBranded()
     }
 }
 
-
-
 void idk::core::ServiceManager::update()
 {
     for (auto *srv: mServices)
@@ -64,13 +60,10 @@ void idk::core::ServiceManager::update()
     }
 }
 
-
-
 bool idk::core::ServiceManager::running()
 {
     return running_;
 }
-
 
 void idk::core::ServiceManager::shutdown()
 {
