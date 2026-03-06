@@ -5,7 +5,7 @@
 #include <cstring>
 #include <vector>
 #include <memory>
-#include "libidk/log.hpp"
+#include "idk/core/log.hpp"
 
 
 namespace idk

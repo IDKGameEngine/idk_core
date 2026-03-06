@@ -1,7 +1,7 @@
 #pragma once
 
 #include "idk/core/type.hpp"
-#include "libidk/log.hpp"
+#include "idk/core/log.hpp"
 #include <string>
 
 namespace idk::file

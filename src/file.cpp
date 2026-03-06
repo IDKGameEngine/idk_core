@@ -1,5 +1,5 @@
 #include "idk/core/file.hpp"
-#include "libidk/assert.hpp"
+#include "idk/core/assert.hpp"
 #include <fstream>
 #include <vector>
 

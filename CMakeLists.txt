@@ -12,12 +12,12 @@ target_compile_features(
 target_include_directories(
     ${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/h"
 )
-target_link_libraries(
-    ${PROJECT_NAME} PUBLIC libidk
-)
 target_sources(
     ${PROJECT_NAME} PRIVATE
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/assert.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/file.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/log.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/memory.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/port.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/service.cpp"
 )

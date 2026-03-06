@@ -1,37 +1,41 @@
 #include "idk/core/service.hpp"
 
-idk::idtype idk::ServiceManager::typeidx_ = 0;
+idk::idtype idk::core::ServiceManager::typeidx_ = 0;
 
 
-idk::ServiceManager::ServiceManager()
-:   mTypeIdxBase(ServiceManager::typeidx_),
-    mEnabled(true)
+idk::core::ServiceManager::ServiceManager()
+:   typeIdxBase_(ServiceManager::typeidx_),
+    running_(true),
+    shutdown_(false)
 {
 
 }
 
 
-// int idk::ServiceManager::_typeIdxToArrayIdx(idk::idtype typeidx)
-// {
-//     size_t idx = typeidx - mTypeIdxBase;
-
-//     if (!(idx < mServices.size()))
-//     {
-//         return -1;
-//     }
-
-//     return idx;
-// }
-
-
-void idk::ServiceManager::update()
+int idk::core::ServiceManager::_typeIdxToArrayIdx(idk::idtype typeidx)
 {
-    for (auto *srv: mServices)
+    idk::idtype idx = typeidx - typeIdxBase_;
+
+    if (!((size_t)idx < mServices.size()))
     {
-        srv->onUpdate();
+        return -1;
     }
 
-    for (int i=mServices.size()-1; i>=0; i--)
+    return idx;
+}
+
+
+void idk::core::ServiceManager::_shutdownAll()
+{
+    for (auto *srv: mServices)
+        srv->mBrandOfSacrifice = true;
+    _shutdownBranded();
+}
+
+void idk::core::ServiceManager::_shutdownBranded()
+{
+    int sz = int(mServices.size());
+    for (int i=sz-1; i>=0; i--)
     {
         if (mServices[i]->mBrandOfSacrifice)
         {
@@ -44,11 +48,32 @@ void idk::ServiceManager::update()
 
 
 
-
-idk::Service::Service()
-:   mBrandOfSacrifice(false)
+void idk::core::ServiceManager::update()
 {
+    for (auto *srv: mServices)
+    {
+        srv->onUpdate();
+    }
 
+    _shutdownBranded();
+
+    if (shutdown_)
+    {
+        running_ = false;
+        _shutdownAll();
+    }
 }
 
+
+
+bool idk::core::ServiceManager::running()
+{
+    return running_;
+}
+
+
+void idk::core::ServiceManager::shutdown()
+{
+    shutdown_ = true;
+}
 
