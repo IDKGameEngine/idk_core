@@ -29,7 +29,8 @@ namespace idk
             case EngineStat::Alive:
             case EngineStat::Dead:
                 return true;
-            return false;
+            default:
+                return false;
         }
     }
 
@@ -46,6 +47,7 @@ private:
 
 public:
     virtual ~IEngine() = default;
+    virtual void update() = 0;
     virtual void shutdown() = 0;
 
     /**

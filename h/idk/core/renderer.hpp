@@ -6,23 +6,16 @@
 
 namespace idk::core
 {
-    class IRenderer: public idk::core::Service
+    class IRenderer: public idk::NonCopyable, public idk::NonMovable
     {
     public:
         virtual ~IRenderer() = default;
         virtual void beginFrame() = 0;
         virtual void endFrame() = 0;
 
-        // virtual void onUpdate() = 0;
-        // virtual void onEnable() = 0;
-        // virtual void onDisable() = 0;
-        // virtual void onRestart() = 0;
-        // virtual void onShutdown() = 0;
     private:
 
     };
-
-    using IRendererPtr = std::shared_ptr<idk::core::IRenderer>;
 
 }
 
