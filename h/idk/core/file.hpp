@@ -30,7 +30,6 @@ namespace idk
         bool loadFile(const char *filepath);
         // const char*  data() const { return (const char*)mData }
         // const size_t size() const { return mSize; }
-
     };
 }
 
@@ -47,3 +46,20 @@ bool idk::FileReader<N>::loadFile(const char *filepath)
     return mSize < N;
 }
 
+
+
+
+namespace idk
+{
+    class MMapFile
+    {
+    private:
+        int file_;
+    public:
+        void  *base;
+        size_t size;
+
+        MMapFile(const char *path);
+        ~MMapFile();
+    };
+}
