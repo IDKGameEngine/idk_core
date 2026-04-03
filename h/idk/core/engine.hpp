@@ -2,7 +2,6 @@
 
 #include "idk/core/type.hpp"
 
-
 namespace idk
 {
     enum class EngineStat: uint8_t
@@ -34,27 +33,10 @@ namespace idk
         }
     }
 
-    namespace core
+    class IEngine: public idk::NonCopyable, public idk::NonMovable
     {
-        class IEngine;
-    }
+    public:
+        virtual ~IEngine() = default;
+        virtual void shutdown() = 0;
+    };
 }
-
-
-class idk::core::IEngine: public idk::NonCopyable, public idk::NonMovable
-{
-private:
-
-public:
-    virtual ~IEngine() = default;
-    virtual void update() = 0;
-    virtual void shutdown() = 0;
-
-    /**
-     * @return true if successful/acknowledged.
-     */
-    virtual bool set_ctrl(EngineCtrl) = 0;
-    virtual EngineStat get_stat() = 0;
-
-};
-

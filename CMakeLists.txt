@@ -9,6 +9,9 @@ add_library(
 target_compile_features(
     ${PROJECT_NAME} PUBLIC cxx_std_23
 )
+target_compile_options(
+    ${PROJECT_NAME} PUBLIC -Werror -Wall -Wextra
+)
 target_include_directories(
     ${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/h"
 )
