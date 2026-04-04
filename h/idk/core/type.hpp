@@ -11,6 +11,9 @@ namespace idk
     class NonCopyable;
     class NonMovable;
 
+    template <typename T>
+    using FuncPtr = T*;
+
     namespace detail
     {
         struct typeid_impl
