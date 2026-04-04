@@ -1,6 +1,6 @@
 #pragma once
 
-#include "idk/core/adapter.hpp"
+#include "idk/AppRuntime.hpp"
 
 namespace idk
 {
@@ -15,7 +15,7 @@ namespace idk
         static constexpr uint64_t stepMs = 1000U / RateHz;
 
         PeriodicTimer()
-        :   mPrevMs(idk_adapter::GetSysTimeMs()),
+        :   mPrevMs(AppRuntime::GetSysTimeMs()),
             mCurrMs(mPrevMs)
         {
 
@@ -23,7 +23,7 @@ namespace idk
 
         bool expired()
         {
-            mCurrMs = idk_adapter::GetSysTimeMs();
+            mCurrMs = AppRuntime::GetSysTimeMs();
             if (mCurrMs > mPrevMs + stepMs)
             {
                 mPrevMs = mCurrMs;
