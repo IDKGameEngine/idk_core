@@ -1,34 +1,21 @@
 #pragma once
 
-#include <cstdint>
-
-// #define GetSysTimeMs() SDL_GetTicks()
-
-
+#include "idk/core/adapter.hpp"
 
 namespace idk
 {
-    using GetSysTimeMsFuncPtr = uint64_t (*)(void);
-
-    template <GetSysTimeMsFuncPtr FuncPtr>
-    struct GetSysTimeMsFunctorBase
-    {
-
-    };
-    namespace detail { inline static uint64_t getSysTimeMsDefault() { return 0; } }
-    uint64_t (*getSysTimeMs)() = detail::getSysTimeMsDefault;
-
+    template <uint64_t RateHz>
     class PeriodicTimer
     {
     private:
-        uint64_t mPeriodMs;
         uint64_t mPrevMs, mCurrMs;
 
     public:
-    
-        PeriodicTimer(uint64_t period_msec)
-        :   mPeriodMs(period_msec),
-            mPrevMs(getSysTimeMs()),
+        static constexpr uint64_t rateHz = RateHz;
+        static constexpr uint64_t stepMs = 1000U / RateHz;
+
+        PeriodicTimer()
+        :   mPrevMs(idk_adapter::GetSysTimeMs()),
             mCurrMs(mPrevMs)
         {
 
@@ -36,8 +23,8 @@ namespace idk
 
         bool expired()
         {
-            mCurrMs = getSysTimeMs();
-            if (mCurrMs > mPrevMs + mPeriodMs)
+            mCurrMs = idk_adapter::GetSysTimeMs();
+            if (mCurrMs > mPrevMs + stepMs)
             {
                 mPrevMs = mCurrMs;
                 return true;
