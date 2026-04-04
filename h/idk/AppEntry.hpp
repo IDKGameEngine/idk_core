@@ -1,9 +1,6 @@
 #pragma once
 
-#include "idk/core/log.hpp"
-
-
-namespace idk::AppEntry
+namespace idk
 {
-    extern int AppEntry(int argc, char **argv);
+    extern int AppEntry(int, char**);
 }

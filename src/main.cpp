@@ -1,5 +1,6 @@
 #include "idk/AppEntry.hpp"
 #include "idk/AppRuntime.hpp"
+#include "idk/core/log.hpp"
 
 int main(int argc, char **argv)
 {
@@ -10,5 +11,5 @@ int main(int argc, char **argv)
         return 1;
     }
 
-    return idk::AppEntry::AppEntry(argc, argv);
+    return idk::AppEntry(argc, argv);
 }
