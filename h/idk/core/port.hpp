@@ -28,6 +28,7 @@ private:
     uint32_t addr;
 
 public:
+    RxMsgEndpoint() { (void)addr; }
     virtual void recvmsg(const void*, size_t) = 0;
 };
 
