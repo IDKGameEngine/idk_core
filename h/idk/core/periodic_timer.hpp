@@ -1,36 +1,60 @@
 #pragma once
 
+#include "idk/core/metric.hpp"
 #include "idk/AppRuntime.hpp"
 
 namespace idk
 {
-    template <uint64_t RateHz>
+    class IEngine;
+
+
     class PeriodicTimer
     {
     private:
-        uint64_t mPrevMs, mCurrMs;
+        const uint64_t period_;
+        uint64_t accum_;
+        uint64_t prev_;
 
     public:
-        static constexpr uint64_t rateHz = RateHz;
-        static constexpr uint64_t stepMs = 1000U / RateHz;
-
-        PeriodicTimer()
-        :   mPrevMs(AppRuntime::GetSysTimeMs()),
-            mCurrMs(mPrevMs)
+        PeriodicTimer(double period_msec)
+        :   period_ (idk::time::msec_to_nsec(period_msec)),
+            accum_  (0),
+            prev_   (AppRuntime::GetSysTimeNs())
         {
 
         }
 
-        bool expired()
+        void update()
         {
-            mCurrMs = AppRuntime::GetSysTimeMs();
-            if (mCurrMs > mPrevMs + stepMs)
+            uint64_t curr = AppRuntime::GetSysTimeNs();
+            accum_ += (curr - prev_);
+            prev_   = curr;
+        }
+
+        bool ready()
+        {
+            if (accum_ > period_)
             {
-                mPrevMs = mCurrMs;
+                accum_ -= period_;
                 return true;
             }
             return false;
         }
+
+        template <typename T> T getPeriodNs() { return static_cast<T>(period_); }
+        template <typename T> T getPeriodUs() { return static_cast<T>(period_) / T(1000); }
+        template <typename T> T getPeriodMs() { return getPeriodUs<T>() / T(1000); }
+
+        // bool expired()
+        // {
+        //     mCurrMs = AppRuntime::GetSysTimeMs();
+        //     if (mCurrMs > mPrevMs + stepMs)
+        //     {
+        //         mPrevMs = mCurrMs;
+        //         return true;
+        //     }
+        //     return false;
+        // }
     };
 }
 
