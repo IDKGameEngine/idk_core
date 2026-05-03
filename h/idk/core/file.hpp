@@ -23,7 +23,7 @@ public:
 };
 
 
-class idk::FileReader: public idk::NonCopyable, public idk::NonMovable
+class idk::FileReader
 {
 private:
     const idk::FileLoader *loader_;
