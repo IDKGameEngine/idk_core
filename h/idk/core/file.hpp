@@ -1,65 +1,36 @@
 #pragma once
 
-#include "idk/core/type.hpp"
-#include "idk/core/log.hpp"
-#include <string>
-
-namespace idk::file
-{
-    std::string loadRaw(const std::string &path);
-    size_t load_raw(const char *filepath, void *buf, size_t bufsz);
-}
-
+#include "idk/core/types.hpp"
 
 namespace idk
 {
-    template <size_t N>
-    class FileReader: public idk::NonCopyable
-    {
-    private:
-        alignas (std::max_align_t)
-        uint8_t m_data[N];
-        size_t  m_size;
-
-    public:
-        const char *mData;
-        size_t mSize;
-
-        FileReader(): mSize(0) {  };
-
-        bool loadFile(const char *filepath);
-        // const char*  data() const { return (const char*)mData }
-        // const size_t size() const { return mSize; }
-    };
+    class FileLoader;
+    class FileReader;
 }
 
 
-template <size_t N>
-bool idk::FileReader<N>::loadFile(const char *filepath)
+class idk::FileLoader: public idk::NonCopyable, public idk::NonMovable
 {
-    m_size = idk::file::load_raw(filepath, m_data, N);
-    mData = (const char*)m_data;
-    mSize = m_size;
+private:
+    friend class idk::FileReader;
+    const char *path_;
+    void  *data_;
+    size_t size_;
 
-    VLOG_INFO("FileReader<{}> loaded {} bytes", N, mSize);
-
-    return mSize < N;
-}
-
-
+public:
+    FileLoader(const char *filepath);
+    ~FileLoader();
+};
 
 
-namespace idk
+class idk::FileReader: public idk::NonCopyable, public idk::NonMovable
 {
-    class MMapFile
-    {
-    private:
-        int file_;
-    public:
-        void  *base;
-        size_t size;
+private:
+    const idk::FileLoader *loader_;
 
-        MMapFile(const char *path);
-        ~MMapFile();
-    };
-}
+public:
+    FileReader(const char *filepath);
+    const void *getData() const { return loader_->data_; }
+    size_t getSize() const { return loader_->size_; }
+};
+

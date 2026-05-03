@@ -1,6 +1,6 @@
 #pragma once
 
-#include "idk/core/type.hpp"
+#include "idk/core/types.hpp"
 
 #include <cstddef>
 #include <cstdint>
@@ -8,10 +8,11 @@
 
 #include <atomic>
 #include <array>
+#include <mutex>
 #include <queue>
 
 
-namespace idk::core
+namespace idk
 {
     template <typename T> class DoubleBuffer;
     template <typename T> class DblBufferWriter;
@@ -21,28 +22,47 @@ namespace idk::core
 
 
 template <typename T>
-class idk::core::DoubleBuffer: public idk::NonCopyable, public idk::NonMovable
+class idk::DoubleBuffer: public idk::NonCopyable, public idk::NonMovable
 {
 private:
+public:
     friend class DblBufferWriter<T>;
     friend class DblBufferReader<T>;
 
+    std::mutex    mutex_;
     std::queue<T> data_[2];
-    int widx_;
-    int ridx_;
+    int           widx_;
+    int           ridx_;
 
-    auto *wtget() { return &data_[widx_]; }
-    auto *rdget() { return &data_[ridx_]; }
+    auto *wtget()
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        return &data_[widx_];
+    }
 
-public:
-    explicit DoubleBuffer(): widx_(0), ridx_(1) {  }
-    void swapBuffers() { std::swap(widx_, ridx_); }
+    auto *rdget()
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        return &data_[ridx_];
+    }
+
+    explicit DoubleBuffer()
+    :   widx_(0), ridx_(1)
+    {
+
+    }
+
+    void swapBuffers()
+    {
+        std::lock_guard<std::mutex> lock(mutex_);
+        std::swap(widx_, ridx_);
+    }
 
 };
 
 
 template <typename T>
-class idk::core::DblBufferWriter
+class idk::DblBufferWriter
 {
 private:
     DoubleBuffer<T> &buf_;
@@ -54,7 +74,7 @@ public:
 
 
 template <typename T>
-class idk::core::DblBufferReader
+class idk::DblBufferReader
 {
 private:
     DoubleBuffer<T> &buf_;

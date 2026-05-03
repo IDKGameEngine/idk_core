@@ -1,79 +1,56 @@
 #include "idk/core/file.hpp"
 #include "idk/core/assert.hpp"
-#include <fstream>
-#include <vector>
+#include "idk/core/log.hpp"
 
+#include <cstring>
+#include <map>
 
-namespace idk::file
+static std::map<std::string, idk::FileLoader*> file_loaders_;
+
+static idk::FileLoader *getFileLoader(const char *path)
 {
-    std::string loadRaw(const std::string &path);
-}
-
-
-std::string idk::file::loadRaw(const std::string &path)
-{
-    std::ifstream stream(path, std::ifstream::binary);
-    IDK_ASSERT(stream.is_open(), "Failed opening file \"{}\"", path.c_str());
-
-    stream.seekg(0, std::ifstream::end);
-    std::string buf;  buf.resize(stream.tellg());
-
-    stream.seekg(0, std::ifstream::beg);
-    stream.read((char*)(buf.data()), buf.size());
-
-    return buf;
+    IDK_ASSERT(file_loaders_.contains(path), "File not loaded \"{}\"", path);
+    return file_loaders_[path];
 }
 
 
 
-size_t idk::file::load_raw(const char *filepath, void *buf, size_t bufsz)
+idk::FileLoader::FileLoader(const char *path)
+:   path_(path), data_(nullptr), size_(0)
 {
-    size_t filesz = 0;
+    IDK_ASSERT(!file_loaders_.contains(path), "File already loaded \"{}\"", path);
 
-    std::string path(filepath);
-    std::ifstream stream(path, std::ifstream::binary);
-    IDK_ASSERT(stream.is_open(), "Failed opening file \"{}\"", path.c_str());
+    std::FILE *fh = std::fopen(path, "r");
+    IDK_ASSERT(fh!=NULL, "Failure loading \"{}\"", path);
 
-    stream.seekg(0, std::ifstream::end);
-    filesz = stream.tellg();
-    IDK_ASSERT(filesz<=bufsz, "Failed to load file, too large: %s", filepath);
+    std::fseek(fh, 0, SEEK_END);
+    size_ = std::ftell(fh);
+    data_ = std::malloc(size_);
 
-    stream.seekg(0, std::ifstream::beg);
-    stream.read(static_cast<char*>(buf), filesz);
+    std::fseek(fh, 0, SEEK_SET);
+    IDK_ASSERT(size_==std::fread(data_, 1, size_, fh), "Failure loading \"{}\"", path);
+    std::fclose(fh);
 
-    return filesz;
+    file_loaders_[path] = this;
+    VLOG_INFO("[FileLoader::FileLoader] Success loading \"{}\"", path);
 }
 
 
-
-#ifdef __linux__
-    #include <sys/mman.h>
-    #include <sys/stat.h>
-    #include <fcntl.h>
-    #include <stdio.h>
-    #include <unistd.h>
-
-    idk::MMapFile::MMapFile(const char *path)
+idk::FileLoader::~FileLoader()
+{
+    if (data_)
     {
-        file_ = open(path, O_RDONLY);
-        struct stat st;
-        fstat(file_, &st);
-
-        base = mmap(NULL, st.st_size, PROT_READ, MAP_PRIVATE, file_, 0);
-        size = st.st_size;
-
-        if (base == MAP_FAILED)
-        {
-            perror("mmap failed");
-            exit(1);
-        }
+        IDK_ASSERT(file_loaders_.contains(path_), "This should never happen");
+        file_loaders_.erase(path_);
+        std::free(data_);
     }
+}
 
-    idk::MMapFile::~MMapFile()
-    {
-        munmap(base, size);
-        close(file_);
-    }
 
-#endif // __linux__
+
+idk::FileReader::FileReader(const char *path)
+:   loader_(getFileLoader(path))
+{
+
+}
 

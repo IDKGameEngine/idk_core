@@ -1,6 +1,6 @@
 // #include "idk/core/service.hpp"
 
-// idk::idtype idk::core::ServiceManager::typeidx_ = 0;
+// idk::IdType idk::core::ServiceManager::typeidx_ = 0;
 
 
 // idk::core::ServiceManager::ServiceManager()
@@ -13,9 +13,9 @@
 
 // }
 
-// int idk::core::ServiceManager::_typeIdxToArrayIdx(idk::idtype typeidx)
+// int idk::core::ServiceManager::_typeIdxToArrayIdx(idk::IdType typeidx)
 // {
-//     idk::idtype idx = typeidx - typeIdxBase_;
+//     idk::IdType idx = typeidx - typeIdxBase_;
 
 //     if (!((size_t)idx < mServices.size()))
 //     {

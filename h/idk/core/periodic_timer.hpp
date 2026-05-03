@@ -1,7 +1,7 @@
 #pragma once
 
 #include "idk/core/metric.hpp"
-#include "idk/AppRuntime.hpp"
+#include "idk/OsAdapter.hpp"
 
 namespace idk
 {
@@ -19,14 +19,14 @@ namespace idk
         PeriodicTimer(double period_msec)
         :   period_ (idk::time::msec_to_nsec(period_msec)),
             accum_  (0),
-            prev_   (AppRuntime::GetSysTimeNs())
+            prev_   (OsAdapter::GetSysTimeNs())
         {
 
         }
 
         void update()
         {
-            uint64_t curr = AppRuntime::GetSysTimeNs();
+            uint64_t curr = OsAdapter::GetSysTimeNs();
             accum_ += (curr - prev_);
             prev_   = curr;
         }
@@ -47,7 +47,7 @@ namespace idk
 
         // bool expired()
         // {
-        //     mCurrMs = AppRuntime::GetSysTimeMs();
+        //     mCurrMs = OsAdapter::GetSysTimeMs();
         //     if (mCurrMs > mPrevMs + stepMs)
         //     {
         //         mPrevMs = mCurrMs;

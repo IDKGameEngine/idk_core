@@ -2,7 +2,6 @@
 
 #define IDK_DEBUG
 
-
 #ifdef IDK_DEBUG
     namespace idk::detail
     {

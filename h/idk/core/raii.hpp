@@ -1,9 +1,9 @@
 #pragma once
 
-#include "idk/core/type.hpp"
+#include "idk/core/types.hpp"
 
 
-namespace idk::core
+namespace idk
 {
     template <typename T>
     struct RaiiFunc;

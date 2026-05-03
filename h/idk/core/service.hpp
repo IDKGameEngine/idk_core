@@ -1,6 +1,6 @@
 #pragma once
 
-#include "idk/core/type.hpp"
+#include "idk/core/types.hpp"
 #include "idk/core/engine.hpp"
 #include "idk/core/periodic_timer.hpp"
 
@@ -13,24 +13,29 @@ namespace idk::core
         idk::PeriodicTimer timer_;
 
     public:
-        Service(const idk::PeriodicTimer &timer)
-        :   timer_(timer) {  };
+        Service(const idk::PeriodicTimer &t): timer_(t) {  };
         virtual ~Service() = default;
-        virtual void onUpdate(IEngine*) = 0;
-        virtual void onShutdown(IEngine*) = 0;
+        virtual void _startup(IEngine*) = 0;
+        virtual void _update(IEngine*) = 0;
+        virtual void _shutdown(IEngine*) = 0;
 
-        void update(IEngine *engine)
+        void startup(IEngine *E)
+        {
+            _startup(E);
+        }
+
+        void update(IEngine *E)
         {
             timer_.update();
             while (timer_.ready())
             {
-                this->onUpdate(engine);
+                _update(E);
             }
         }
 
-        void shutdown(IEngine *engine)
+        void shutdown(IEngine *E)
         {
-            this->onShutdown(engine);
+            _shutdown(E);
         }
     };
 }

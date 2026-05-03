@@ -1,25 +1,9 @@
 #pragma once
 
-#include "idk/core/type.hpp"
+#include "idk/core/types.hpp"
 
 namespace idk
 {
-    enum class EngineStat: uint8_t
-    {
-        Invalid = 0,
-        Alive,
-        Dead,
-        Starting,
-        Stopping,
-    };
-
-    enum class EngineCtrl: uint8_t
-    {
-        None = 0,
-        Start,
-        Stop
-    };
-
     inline bool statIsCtrlEnabled(const idk::EngineStat stat)
     {
         // engine control only enabled during non-transition states.
@@ -37,6 +21,9 @@ namespace idk
     {
     public:
         virtual ~IEngine() = default;
+        virtual bool running() = 0;
         virtual void shutdown() = 0;
+        virtual void await_startup() = 0;
+        virtual void await_shutdown() = 0;
     };
 }

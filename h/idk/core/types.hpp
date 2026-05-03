@@ -6,10 +6,29 @@
 
 namespace idk
 {
-    using idtype = int32_t;
+    using IdType = int64_t;
 
     class NonCopyable;
     class NonMovable;
+
+    class IEngine;
+
+    enum class EngineStat: uint8_t
+    {
+        Invalid = 0,
+        Alive,
+        Dead,
+        Starting,
+        Stopping,
+    };
+
+    enum class EngineCtrl: uint8_t
+    {
+        None = 0,
+        Start,
+        Stop
+    };
+
 
     template <typename T>
     using FuncPtr = T*;
@@ -18,7 +37,7 @@ namespace idk
     {
         struct typeid_impl
         {
-            inline static idtype value_ = 0;
+            inline static IdType value_ = 0;
         };
     }
 }
@@ -50,9 +69,9 @@ public:
 
 
 template <typename T>
-inline idk::idtype idk_typeid()
+inline idk::IdType idk_typeid()
 {
-    static const idk::idtype id = idk::detail::typeid_impl::value_++;
+    static const idk::IdType id = idk::detail::typeid_impl::value_++;
     return id;
 }
 
