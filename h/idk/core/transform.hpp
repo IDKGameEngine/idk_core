@@ -13,7 +13,7 @@ namespace idk
     {
         static glm::vec3 FRONT = glm::vec3(0.0f, 0.0f, 1.0f);
         static glm::vec3 RIGHT = glm::vec3(1.0f, 0.0f, 0.0f);
-        static glm::vec3 UP = glm::vec3(0.0f, 1.0f, 0.0f);
+        static glm::vec3 UP    = glm::vec3(0.0f, 1.0f, 0.0f);
     }
 
     struct Transform
@@ -27,12 +27,18 @@ namespace idk
 
     public:
         Transform(const glm::vec3 &p = glm::vec3(0.0f))
-            : M4(1.0f),
-              pos(p),
-              rot(glm::vec3(0.0f)),
-              scale(1.0f),
-              dirty(false)
+        :   M4(1.0f),
+            pos(p),
+            rot(glm::vec3(0.0f)),
+            scale(1.0f),
+            dirty(false)
         {
+
+        }
+
+        bool isDirty()
+        {
+            return dirty;
         }
 
         const glm::mat4 &to_mat4()
@@ -49,25 +55,13 @@ namespace idk
             return M4;
         }
 
-        glm::vec3 getPos()
-        {
-            return pos;
-        }
+        glm::vec3 getPos() { return pos; }
+        glm::quat getRot() { return rot; }
+        float getScale() { return scale; }
 
-        glm::quat getRot()
-        {
-            return rot;
-        }
-
-        float getScale()
-        {
-            return scale;
-        }
-
-        glm::vec3 getFront()
-        {
-            return glm::mat3(M4) * coordinate_system::FRONT;
-        }
+        glm::vec3 getFront() { return glm::normalize(glm::mat3(to_mat4()) * coordinate_system::FRONT); }
+        glm::vec3 getRight() { return glm::normalize(glm::mat3(to_mat4()) * coordinate_system::RIGHT); }
+        glm::vec3 getUp()    { return glm::normalize(glm::mat3(to_mat4()) * coordinate_system::UP);    }
 
         void setPos(const glm::vec3 &p)
         {

@@ -10,7 +10,7 @@ namespace idk
         return static_cast<float>(rand()) / static_cast<float>(RAND_MAX);
     }
 
-    inline float randf( float min, float max )
+    inline float randf(float min, float max)
     {
         return min + static_cast<float>(rand()) / (static_cast<float>(RAND_MAX/(max-min)));
     }
