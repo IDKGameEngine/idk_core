@@ -4,6 +4,7 @@
 int main(int argc, char **argv)
 {
     VLOG_INFO("[main]");
+    srand(clock());
 
     if (!idk::OsAdapter::PreInit())
     {
