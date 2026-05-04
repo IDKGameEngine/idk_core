@@ -40,3 +40,30 @@ namespace idk::core
     };
 }
 
+
+
+namespace idk
+{
+    template <typename T>
+    class PeriodicTimedType
+    {
+    private:
+        T impl_;
+        idk::PeriodicTimer timer_;
+
+    public:
+        PeriodicTimedType(const idk::PeriodicTimer &t)
+        : impl_(T()), timer_(t) {  }
+
+        void update(IEngine *E)
+        {
+            timer_.update();
+
+            while (timer_.ready())
+            {
+                impl_->_update(E);
+            }
+        }
+    };
+}
+

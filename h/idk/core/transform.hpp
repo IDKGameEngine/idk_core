@@ -7,86 +7,104 @@
 // #define GLM_ENABLE_EXPERIMENTAL
 // #include <glm/gtx/matrix_decopose.hpp>
 
-struct Transform;
-class Transformable;
-
-
-struct Transform
+namespace idk
 {
-private:
-    friend class Transformable;
-    glm::mat4 m4;
-    glm::vec3 pos;
-    glm::quat rot;
-    float scale;
-    bool dirty;
-
-public:
-    Transform(const glm::vec3 &p = glm::vec3(0.0f))
-    :   m4(1.0f),
-        pos(p),
-        rot(glm::vec3(0.0f)),
-        scale(1.0f),
-        dirty(false)
+    namespace coordinate_system
     {
-
+        static glm::vec3 FRONT = glm::vec3(0.0f, 0.0f, 1.0f);
+        static glm::vec3 RIGHT = glm::vec3(1.0f, 0.0f, 0.0f);
+        static glm::vec3 UP = glm::vec3(0.0f, 1.0f, 0.0f);
     }
 
-    const glm::mat4 &to_mat4()
+    struct Transform
     {
-        if (dirty)
+    private:
+        glm::mat4 M4;
+        glm::vec3 pos;
+        glm::quat rot;
+        float scale;
+        bool dirty;
+
+    public:
+        Transform(const glm::vec3 &p = glm::vec3(0.0f))
+            : M4(1.0f),
+              pos(p),
+              rot(glm::vec3(0.0f)),
+              scale(1.0f),
+              dirty(false)
         {
-            m4 = glm::translate(glm::mat4(1.0f), pos);
-            m4 = glm::rotate(m4, glm::radians(rot.x), glm::vec3(1,0,0));
-            m4 = glm::rotate(m4, glm::radians(rot.y), glm::vec3(0,1,0));
-            m4 = glm::rotate(m4, glm::radians(rot.z), glm::vec3(0,0,1));
-            m4 = glm::scale(m4, glm::vec3(scale));
-            dirty = false;
         }
-        return m4;
-    }
 
-    glm::vec3 getPos() { return pos; }
-    glm::quat getRot() { return rot; }
-    float getScale() { return scale; }
+        const glm::mat4 &to_mat4()
+        {
+            if (dirty)
+            {
+                M4 = glm::translate(glm::mat4(1.0f), pos);
+                M4 = glm::rotate(M4, glm::radians(rot.x), glm::vec3(1, 0, 0));
+                M4 = glm::rotate(M4, glm::radians(rot.y), glm::vec3(0, 1, 0));
+                M4 = glm::rotate(M4, glm::radians(rot.z), glm::vec3(0, 0, 1));
+                M4 = glm::scale(M4, glm::vec3(scale));
+                dirty = false;
+            }
+            return M4;
+        }
 
-    void setPos(const glm::vec3 &p)
-    {
-        dirty = true;
-        pos = p;
-    }
+        glm::vec3 getPos()
+        {
+            return pos;
+        }
 
-    void setRot(const glm::quat &q)
-    {
-        dirty = true;
-        rot = q;
-    }
+        glm::quat getRot()
+        {
+            return rot;
+        }
 
-    void setScale(float s)
-    {
-        dirty = true;
-        scale = s;
-    }
+        float getScale()
+        {
+            return scale;
+        }
 
-    void translate(float x, float y, float z)
-    {
-        dirty = true;
-        pos += glm::vec3(x, y, z);
-    }
-    void translate(const glm::vec3 &delta)
-    {
-        dirty = true;
-        pos += delta;
-    }
+        glm::vec3 getFront()
+        {
+            return glm::mat3(M4) * coordinate_system::FRONT;
+        }
 
-    void rotate(float radTheta, const glm::vec3 &axis)
-    {
-        dirty = true;
-        rot = glm::normalize(rot * glm::angleAxis(radTheta, axis));
-    }
-};
+        void setPos(const glm::vec3 &p)
+        {
+            dirty = true;
+            pos = p;
+        }
 
+        void setRot(const glm::quat &q)
+        {
+            dirty = true;
+            rot = q;
+        }
 
+        void setScale(float s)
+        {
+            dirty = true;
+            scale = s;
+        }
+
+        void translate(float x, float y, float z)
+        {
+            dirty = true;
+            pos += glm::vec3(x, y, z);
+        }
+        void translate(const glm::vec3 &delta)
+        {
+            dirty = true;
+            pos += delta;
+        }
+
+        void rotate(float radTheta, const glm::vec3 &axis)
+        {
+            dirty = true;
+            rot = glm::normalize(rot * glm::angleAxis(radTheta, axis));
+        }
+    };
+}
 
 // class Transformable
 // {
@@ -113,4 +131,3 @@ public:
 //     }
 
 // };
-
