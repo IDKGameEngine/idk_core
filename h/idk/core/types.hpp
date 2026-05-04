@@ -2,6 +2,7 @@
 
 #include <cstddef>
 #include <cstdint>
+#include <mutex>
 
 
 namespace idk
@@ -10,6 +11,9 @@ namespace idk
 
     class NonCopyable;
     class NonMovable;
+
+    template <typename T>
+    class ThreadSafeAccess;
 
     class IEngine;
 
@@ -40,6 +44,8 @@ namespace idk
             inline static IdType value_ = 0;
         };
     }
+
+
 }
 
 
@@ -66,6 +72,26 @@ public:
     NonMovable(NonMovable&&) = delete;
     NonMovable &operator=(NonMovable&&) = delete;
 };
+
+
+
+template <typename T>
+class idk::ThreadSafeAccess
+{
+private:
+    T &data_;
+    std::mutex mutex_;
+
+public:
+    ThreadSafeAccess(T &data) : data_(data) { mutex_.lock(); }
+    ~ThreadSafeAccess() { mutex_.unlock(); }
+
+    T &operator()()
+    {
+        return data_;
+    }
+};
+
 
 
 template <typename T>
