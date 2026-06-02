@@ -17,6 +17,7 @@ target_include_directories(
 target_sources(
     ${PROJECT_NAME} PRIVATE
     "${CMAKE_CURRENT_SOURCE_DIR}/src/assert.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/camera.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/cfgparser.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/file.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/log.cpp"
@@ -24,4 +25,5 @@ target_sources(
     "${CMAKE_CURRENT_SOURCE_DIR}/src/memory.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/port.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/service.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/transform.cpp"
 )

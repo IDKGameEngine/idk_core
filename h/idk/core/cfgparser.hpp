@@ -16,51 +16,15 @@ namespace idk
 class idk::CfgParser
 {
 public:
-    class TreeBase
-    {
-    public:
-        const bool isLeaf;
-        TreeBase(bool leaf): isLeaf(leaf) {  }
-    };
+    class TreeBase;
+    class TreeLeaf;
+    class TreeNode;
 
-    class TreeLeaf: public TreeBase
-    {
-    public:
-        std::string mValue;
-        TreeLeaf(const std::string &value): TreeBase(true), mValue(value) {  }
-    };
-
-    class TreeNode: public TreeBase
-    {
-    private:
-        std::map<std::string, TreeBase*> nodes_;
-
-    public:
-        std::string mName;
-        TreeNode(const std::string &name): TreeBase(false), mName(name) {  }
-
-        template <typename T, typename... Args>
-        T *insert(const std::string &key, Args... args)
-        {
-            IDK_ASSERT(!nodes_.contains(key), "nodes_ already contains \"{}\"", key);
-
-            T *ndptr = new T(args...);
-            nodes_[key] = static_cast<TreeBase*>(ndptr);
-            return ndptr;
-        }
-
-        auto begin() { return nodes_.begin(); }
-        auto end()   { return nodes_.end(); }
-    };
-
-
-    TreeNode root_;
     CfgParser(const char *path);
-    void _parse(TreeNode&);
-    void _parse_section(TreeNode&);
     void print();
 
 private:
+    TreeNode *root_;
     std::vector<char> mBuf;
     size_t mIdx, mLine, mCol;
 
@@ -76,29 +40,65 @@ private:
     char retreat();
     char match(char);
 
+    void _parse(TreeNode*);
+    void _parse_section(TreeNode*);
+    void _print(TreeNode*);
 };
 
 
 
 
-static inline void woop_treenode(idk::CfgParser::TreeNode &tnode)
+class idk::CfgParser::TreeBase
 {
-    using namespace idk;
+public:
+    const bool isLeaf;
 
-    idk::SysLog log("%s", tnode.mName.c_str());
-
-    for (auto &[key, nd]: tnode)
+    TreeBase(bool leaf)
+    :   isLeaf(leaf)
     {
-        if (nd->isLeaf)
-        {
-            auto &leaf = *static_cast<CfgParser::TreeLeaf*>(nd);
-            log("%s = \"%s\"", key.c_str(), leaf.mValue.c_str());
-        }
-    
-        else
-        {
-            auto &node = *static_cast<CfgParser::TreeNode*>(nd);
-            woop_treenode(node);
-        }
+
     }
-}
+};
+
+
+class idk::CfgParser::TreeLeaf: public TreeBase
+{
+public:
+    std::string mValue;
+
+    TreeLeaf(const std::string &value)
+    :   TreeBase(true), mValue(value)
+    {
+
+    }
+};
+
+
+class idk::CfgParser::TreeNode: public TreeBase
+{
+private:
+    std::map<std::string, TreeBase*> nodes_;
+
+public:
+    std::string mName;
+
+    TreeNode(const std::string &name)
+    :   TreeBase(false), mName(name)
+    {
+
+    }
+
+    template <typename T, typename... Args>
+    T *insert(const std::string &key, Args... args)
+    {
+        IDK_ASSERT(!nodes_.contains(key), "nodes_ already contains \"{}\"", key);
+
+        T *ndptr = new T(args...);
+        nodes_[key] = static_cast<TreeBase*>(ndptr);
+        return ndptr;
+    }
+
+    auto begin() { return nodes_.begin(); }
+    auto end()   { return nodes_.end(); }
+};
+
