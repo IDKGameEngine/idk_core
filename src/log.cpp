@@ -1,7 +1,31 @@
 #include "idk/core/log.hpp"
 #include "ansi.hpp"
+
 #include <cstdarg>
 #include <cstdio>
+
+#include <mutex>
+
+// namespace idk::core
+// {
+//     static void log_event(idk::ArrayRefType<char, MAX_LOG_STRING_LENGTH> msg)
+//     {
+
+//     }
+
+//     void logEvent(const char *fmt, ...)
+//     {
+//         static char msgbuf[MAX_LOG_STRING_LENGTH];
+
+//         va_list vlist;
+//         va_start(vlist, fmt);
+//         std::snprintf(msgbuf, MAX_LOG_STRING_LENGTH, fmt, vlist);
+//         va_end(vlist);
+
+//         log_event(msgbuf);
+//     }
+// }
+
 
 using namespace idk;
 
@@ -46,23 +70,29 @@ void idk::vnlog(idk::LogType type, const char *title, const char *fmt, ...)
             break;
     }
 
-#ifdef IDKLOG_VERBOSE
-    fprintf((std::FILE*)vl_fh_, "%s[%s]%s[%s] ", color, severity, ANSI::RESET, title);
-#else
-    (void)title;
-    fprintf((std::FILE*)vl_fh_, "%s[%s]%s ", color, severity, ANSI::RESET);
-#endif
 
-    va_list vlist;
-    va_start(vlist, fmt);
-    std::vfprintf((std::FILE*)vl_fh_, fmt, vlist);
-    va_end(vlist);
-
-    fprintf((std::FILE*)vl_fh_, "\n");
-
-    if (type == LogType::FATAL)
+    // static std::mutex logmutex;
     {
-        exit(1);
+        // std::lock_guard<std::mutex> lock(logmutex);
+    
+    #ifdef IDKLOG_VERBOSE
+        fprintf((std::FILE*)vl_fh_, "%s[%s]%s[%s] ", color, severity, ANSI::RESET, title);
+    #else
+        (void)title;
+        fprintf((std::FILE*)vl_fh_, "%s[%s]%s ", color, severity, ANSI::RESET);
+    #endif
+
+        va_list vlist;
+        va_start(vlist, fmt);
+        std::vfprintf((std::FILE*)vl_fh_, fmt, vlist);
+        va_end(vlist);
+
+        fprintf((std::FILE*)vl_fh_, "\n");
+
+        if (type == LogType::FATAL)
+        {
+            exit(1);
+        }
     }
 }
 

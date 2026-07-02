@@ -4,13 +4,16 @@
 #include <cstdint>
 #include <mutex>
 
-
 namespace idk
 {
     using IdType = int64_t;
+    static constexpr IdType ID_INVALID = -1;
 
     class NonCopyable;
     class NonMovable;
+
+    template <typename T, size_t N>
+    using ArrayRefType = T(&)[N];
 
     template <typename T>
     class ThreadSafeAccess;
@@ -45,7 +48,6 @@ namespace idk
         };
     }
 
-
 }
 
 
@@ -71,25 +73,6 @@ public:
     NonMovable &operator=(const NonMovable&) = default;
     NonMovable(NonMovable&&) = delete;
     NonMovable &operator=(NonMovable&&) = delete;
-};
-
-
-
-template <typename T>
-class idk::ThreadSafeAccess
-{
-private:
-    T &data_;
-    std::mutex mutex_;
-
-public:
-    ThreadSafeAccess(T &data) : data_(data) { mutex_.lock(); }
-    ~ThreadSafeAccess() { mutex_.unlock(); }
-
-    T &operator()()
-    {
-        return data_;
-    }
 };
 
 

@@ -16,15 +16,20 @@ namespace idk
 class idk::CfgParser
 {
 public:
+    static constexpr size_t MAX_NODE_NAME_LENGTH = 128;
+
     class TreeBase;
     class TreeLeaf;
     class TreeNode;
 
     CfgParser(const char *path);
+    const TreeNode &operator[](const char *key) const;
     void print();
 
 private:
-    TreeNode *root_;
+
+    TreeNode *rootNode_;
+    TreeNode *cfgNode_;
     std::vector<char> mBuf;
     size_t mIdx, mLine, mCol;
 
@@ -50,14 +55,12 @@ private:
 
 class idk::CfgParser::TreeBase
 {
+private:
+    const bool isLeaf_;
+
 public:
-    const bool isLeaf;
-
-    TreeBase(bool leaf)
-    :   isLeaf(leaf)
-    {
-
-    }
+    TreeBase(bool leaf): isLeaf_(leaf) {  }
+    bool isLeaf() const { return isLeaf_; }
 };
 
 
@@ -70,6 +73,11 @@ public:
     :   TreeBase(true), mValue(value)
     {
 
+    }
+
+    const char *getValue() const
+    {
+        return mValue.c_str();
     }
 };
 
@@ -88,6 +96,28 @@ public:
 
     }
 
+    const char *getValue() const
+    {
+        return reinterpret_cast<const TreeLeaf*>(this)->getValue();
+    }
+
+    int32_t getValueI32() const
+    {
+        return atoi(getValue());
+    }
+
+    uint64_t getValueU64() const
+    {
+        return atoll(getValue());
+    }
+
+    double getValueF64() const
+    {
+        return atof(getValue());
+    }
+
+    const TreeNode &operator[](const char *key) const;
+
     template <typename T, typename... Args>
     T *insert(const std::string &key, Args... args)
     {
@@ -100,5 +130,7 @@ public:
 
     auto begin() { return nodes_.begin(); }
     auto end()   { return nodes_.end(); }
+    const auto begin() const { return nodes_.begin(); }
+    const auto end()   const { return nodes_.end(); }
 };
 

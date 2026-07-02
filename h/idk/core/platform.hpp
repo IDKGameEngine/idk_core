@@ -2,10 +2,10 @@
 
 #include <cstdint>
 
-namespace idk::OsAdapter
+namespace idk::platform
 {
-    extern bool PreInit();
-    extern int  AppMain(int, char**);
+    extern bool AppInit();
+    extern int  AppEntry(int, char**);
 
     extern uint64_t GetSysTimeMs();
     extern uint64_t GetSysTimeNs();

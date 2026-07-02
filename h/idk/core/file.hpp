@@ -33,4 +33,3 @@ public:
     const void *getData() const { return loader_->data_; }
     size_t getSize() const { return loader_->size_; }
 };
-

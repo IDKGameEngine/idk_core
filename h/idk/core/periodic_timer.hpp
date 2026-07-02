@@ -1,7 +1,8 @@
 #pragma once
 
+#include "idk/core/platform.hpp"
 #include "idk/core/metric.hpp"
-#include "idk/OsAdapter.hpp"
+#include "idk/core/log.hpp"
 
 namespace idk
 {
@@ -11,50 +12,40 @@ namespace idk
     class PeriodicTimer
     {
     private:
-        const uint64_t period_;
-        uint64_t accum_;
-        uint64_t prev_;
+        uint64_t periodNs_;
+        uint64_t startTimeNs_;
 
     public:
-        PeriodicTimer(double period_msec)
-        :   period_ (idk::time::msec_to_nsec(period_msec)),
-            accum_  (0),
-            prev_   (OsAdapter::GetSysTimeNs())
+        PeriodicTimer(uint64_t rateHz = 1000000000)
+        :   periodNs_(0),
+            startTimeNs_(idk::platform::GetSysTimeNs())
         {
-
+            setRateHz(rateHz);
         }
 
-        void update()
+        bool expired()
         {
-            uint64_t curr = OsAdapter::GetSysTimeNs();
-            accum_ += (curr - prev_);
-            prev_   = curr;
-        }
-
-        bool ready()
-        {
-            if (accum_ > period_)
+            uint64_t currTimeNs = idk::platform::GetSysTimeNs();
+            if (currTimeNs >= startTimeNs_ + periodNs_)
             {
-                accum_ -= period_;
                 return true;
             }
             return false;
         }
 
-        template <typename T> T getPeriodNs() { return static_cast<T>(period_); }
-        template <typename T> T getPeriodUs() { return static_cast<T>(period_) / T(1000); }
-        template <typename T> T getPeriodMs() { return getPeriodUs<T>() / T(1000); }
+        void reset()
+        {
+            startTimeNs_ = idk::platform::GetSysTimeNs();
+        }
+    
+        void setRateHz(uint64_t rateHz)
+        {
+            periodNs_ = 1000000000 / rateHz;
+        }
 
-        // bool expired()
-        // {
-        //     mCurrMs = OsAdapter::GetSysTimeMs();
-        //     if (mCurrMs > mPrevMs + stepMs)
-        //     {
-        //         mPrevMs = mCurrMs;
-        //         return true;
-        //     }
-        //     return false;
-        // }
+        template <typename T> T getPeriodNs() { return static_cast<T>(periodNs_); }
+        template <typename T> T getPeriodUs() { return static_cast<T>(periodNs_) / T(1000); }
+        template <typename T> T getPeriodMs() { return getPeriodUs<T>() / T(1000); }
     };
 }
 

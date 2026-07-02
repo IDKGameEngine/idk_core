@@ -1,50 +1,44 @@
 #pragma once
 
 #include <atomic>
+#include <condition_variable>
+#include <functional>
+#include <iostream>
 #include <mutex>
 #include <thread>
+#include <vector>
 
 #include "idk/core/types.hpp"
+#include "idk/core/metric.hpp"
+#include "idk/core/queue.hpp"
 
 namespace idk::core
 {
-    template <uint8_t NUM_THREADS>
     class ThreadPool
     {
     public:
-        ThreadPool();
+        static constexpr size_t MAX_THREADS = 4;
+        using TaskFunc = void (*)(void *arg);
 
-    private:
-        struct ThreadArgs
+        struct Task
         {
-            IdType id;
-            // uint8_t data[32];
-
-            ThreadArgs() : id(-1){};
-            ThreadArgs(IdType tid) : id(tid){};
+            idk::IdType id;
+            TaskFunc func;
+            void *arg;
+            Task() : id(ID_INVALID), func(nullptr), arg(nullptr) {  }
         };
 
-        std::thread threads_[NUM_THREADS];
-        ThreadArgs threadArgs_[NUM_THREADS];
+        ThreadPool();
+        IdType createTask(TaskFunc func, void *arg);
 
-        static void threadMain(const ThreadArgs &);
+
+    private:
+        IdType mCurrTaskId;
+        size_t mQueueIdx;
+        std::thread mThreads[MAX_THREADS];
+        core::Queue<Task, 256/MAX_THREADS> mTaskQueue[MAX_THREADS];
+
+        static void threadmain(ThreadPool *tp, size_t tid);
     };
-}  // namespace idk::core
 
-template <uint8_t N>
-idk::core::ThreadPool<N>::ThreadPool()
-{
-    for (uint8_t i = 0; i < N; i++)
-    {
-        threadArgs_[i] = ThreadArgs(i);
-        threads_[i] =
-            std::thread(ThreadPool<N>::threadMain, std::ref(threadArgs_[i]));
-        threads_[i].detach();
-    }
-}
-
-template <uint8_t N>
-void idk::core::ThreadPool<N>::threadMain(const ThreadArgs &args)
-{
-    (void)args;
 }

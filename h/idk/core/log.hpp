@@ -1,8 +1,18 @@
 #pragma once
 
+#include "idk/core/types.hpp"
+
 #include <cstdarg>
 #include <cstdio>
 #include <format>
+
+// namespace idk::core
+// {
+//     static constexpr size_t MAX_LOG_STRING_LENGTH = 1024;
+
+//     void logEvent(const char *fmt, ...);
+// }
+
 
 namespace idk
 {
@@ -25,9 +35,6 @@ namespace idk
 
 #define VLOG_FATAL(...) \
     idk::vnlog(idk::LogType::FATAL, __PRETTY_FUNCTION__, std::format(__VA_ARGS__).c_str())
-
-
-
 
 
 

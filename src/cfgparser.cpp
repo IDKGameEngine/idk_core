@@ -92,7 +92,8 @@ std::string CfgParser::_readTo(char stop)
 
 
 CfgParser::CfgParser(const char *path)
-:   root_(new TreeNode("__global__")),
+:   rootNode_(new TreeNode("__global__")),
+    cfgNode_(nullptr),
     mIdx(0), mLine(0), mCol(0)
 {
     idk::FileLoader loader(path);
@@ -113,13 +114,21 @@ CfgParser::CfgParser(const char *path)
     mLine = 1;
     mCol  = 1;
 
-    _parse(root_);
+    _parse(rootNode_);
+
+    for (auto &[key, nd]: *rootNode_)
+    {
+        if (key == "config")
+        {
+            cfgNode_ = reinterpret_cast<TreeNode*>(nd);
+            break;
+        }
+    }
 }
 
 
 void CfgParser::_parse(TreeNode *curr)
 {
-    // SysLog log("_parse \"%s\"", curr->mName.c_str());
     while (char ch = peek())
     {
         if (match('\n'))
@@ -130,13 +139,11 @@ void CfgParser::_parse(TreeNode *curr)
         else if (match('['))
         {
             std::string sname = _readTo(']');
-            // log("[A] curr->insert<TreeNode>(%s, %s);", sname.c_str(), sname.c_str());
             _parse_section(curr->insert<TreeNode>(sname, sname));
         }
     
         else if (isalpha(ch))
         {
-            // log("[ ] ch==\'%c\'", ch);
             IDK_ASSERT(false, "Invalid format");
         }
     }
@@ -144,7 +151,6 @@ void CfgParser::_parse(TreeNode *curr)
 
 void CfgParser::_parse_section(TreeNode *curr)
 {
-    // SysLog log("_parse_section \"%s\"", curr->mName.c_str());
     _readTo('{'); // [SectionName] { ...
 
     while (char ch = peek())
@@ -156,14 +162,12 @@ void CfgParser::_parse_section(TreeNode *curr)
 
         else if (match('}'))
         {
-            // log("match(\'}\'), return");
             return;
         }
 
         else if (match('['))
         {
             std::string sname = _readTo(']');
-            // log("[B] curr->insert<TreeNode>(%s, %s);", sname.c_str(), sname.c_str());
             _parse_section(curr->insert<TreeNode>(sname, sname));
         }
 
@@ -174,13 +178,11 @@ void CfgParser::_parse_section(TreeNode *curr)
             if (match('\"'))
             {
                 std::string value = _readTo('\"');
-                // log("[C] curr->insert<TreeLeaf>(%s, %s);", key.c_str(), value.c_str());
                 curr->insert<TreeLeaf>(key, value);
             }
             else
             {
                 std::string value = _readTo('\n');
-                // log("[D] curr->insert<TreeLeaf>(%s, %s);", key.c_str(), value.c_str());
                 curr->insert<TreeLeaf>(key, value);
             }
         }
@@ -188,8 +190,42 @@ void CfgParser::_parse_section(TreeNode *curr)
 }
 
 
+const CfgParser::TreeNode &CfgParser::operator[](const char *searchKey) const
+{
+    static TreeLeaf dummy("");
+    if (cfgNode_ == nullptr)
+    {
+        return *reinterpret_cast<TreeNode*>(&dummy);
+    }
+    return (*cfgNode_)[searchKey];
+}
 
-void CfgParser::print() { _print(root_); }
+const CfgParser::TreeNode &CfgParser::TreeNode::operator[](const char *searchKey) const
+{
+    static TreeLeaf dummy("");
+
+    const TreeNode &curr = *this;
+    for (const auto &[key, nd]: curr)
+    {
+        if (key != std::string(searchKey))
+        {
+            continue;
+        }
+        if (nd->isLeaf())
+        {
+            return *reinterpret_cast<TreeNode*>(nd);
+        }
+        else
+        {
+            return *reinterpret_cast<TreeNode*>(nd);
+        }
+    }
+
+    return *reinterpret_cast<TreeNode*>(&dummy);
+}
+
+
+void CfgParser::print() { _print(rootNode_); }
 void CfgParser::_print(CfgParser::TreeNode *currNode)
 {
     TreeNode &curr = *currNode;
@@ -197,10 +233,14 @@ void CfgParser::_print(CfgParser::TreeNode *currNode)
 
     for (auto &[key, nd]: curr)
     {
-        if (nd->isLeaf)
+        if (nd->isLeaf())
+        {
             log("%s = \"%s\"", key.c_str(), ((TreeLeaf*)nd)->mValue.c_str());
+        }
         else
+        {
             _print((TreeNode*)nd);
+        }
     }
 }
 
