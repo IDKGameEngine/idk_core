@@ -119,8 +119,7 @@ CfgParser::CfgParser(const char *path)
 
 void CfgParser::_parse(TreeNode *curr)
 {
-    SysLog log("_parse \"%s\"", curr->mName.c_str());
-
+    // SysLog log("_parse \"%s\"", curr->mName.c_str());
     while (char ch = peek())
     {
         if (match('\n'))
@@ -131,13 +130,13 @@ void CfgParser::_parse(TreeNode *curr)
         else if (match('['))
         {
             std::string sname = _readTo(']');
-            log("[A] curr->insert<TreeNode>(%s, %s);", sname.c_str(), sname.c_str());
+            // log("[A] curr->insert<TreeNode>(%s, %s);", sname.c_str(), sname.c_str());
             _parse_section(curr->insert<TreeNode>(sname, sname));
         }
     
         else if (isalpha(ch))
         {
-            log("[ ] ch==\'%c\'", ch);
+            // log("[ ] ch==\'%c\'", ch);
             IDK_ASSERT(false, "Invalid format");
         }
     }
@@ -145,7 +144,7 @@ void CfgParser::_parse(TreeNode *curr)
 
 void CfgParser::_parse_section(TreeNode *curr)
 {
-    SysLog log("_parse_section \"%s\"", curr->mName.c_str());
+    // SysLog log("_parse_section \"%s\"", curr->mName.c_str());
     _readTo('{'); // [SectionName] { ...
 
     while (char ch = peek())
@@ -157,14 +156,14 @@ void CfgParser::_parse_section(TreeNode *curr)
 
         else if (match('}'))
         {
-            log("match(\'}\'), return");
+            // log("match(\'}\'), return");
             return;
         }
 
         else if (match('['))
         {
             std::string sname = _readTo(']');
-            log("[B] curr->insert<TreeNode>(%s, %s);", sname.c_str(), sname.c_str());
+            // log("[B] curr->insert<TreeNode>(%s, %s);", sname.c_str(), sname.c_str());
             _parse_section(curr->insert<TreeNode>(sname, sname));
         }
 
@@ -175,13 +174,13 @@ void CfgParser::_parse_section(TreeNode *curr)
             if (match('\"'))
             {
                 std::string value = _readTo('\"');
-                log("[C] curr->insert<TreeLeaf>(%s, %s);", key.c_str(), value.c_str());
+                // log("[C] curr->insert<TreeLeaf>(%s, %s);", key.c_str(), value.c_str());
                 curr->insert<TreeLeaf>(key, value);
             }
             else
             {
                 std::string value = _readTo('\n');
-                log("[D] curr->insert<TreeLeaf>(%s, %s);", key.c_str(), value.c_str());
+                // log("[D] curr->insert<TreeLeaf>(%s, %s);", key.c_str(), value.c_str());
                 curr->insert<TreeLeaf>(key, value);
             }
         }

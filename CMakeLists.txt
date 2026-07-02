@@ -11,6 +11,9 @@ target_compile_features(
 target_compile_options(
     ${PROJECT_NAME} PUBLIC -Werror -Wall -Wextra
 )
+target_link_libraries(
+    ${PROJECT_NAME} PUBLIC glm::glm-header-only
+)
 target_include_directories(
     ${PROJECT_NAME} PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}/h"
 )
