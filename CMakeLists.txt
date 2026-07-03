@@ -22,6 +22,7 @@ target_sources(
     "${CMAKE_CURRENT_SOURCE_DIR}/src/assert.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/camera.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/cfgparser.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/engine.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/file.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/log.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/port.cpp"

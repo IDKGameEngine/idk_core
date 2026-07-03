@@ -1,6 +1,7 @@
 #pragma once
 
 #include "idk/core/platform.hpp"
+#include "idk/core/math.hpp"
 #include "idk/core/metric.hpp"
 #include "idk/core/log.hpp"
 
@@ -26,7 +27,7 @@ namespace idk
         bool expired()
         {
             uint64_t currTimeNs = idk::platform::GetSysTimeNs();
-            if (currTimeNs >= startTimeNs_ + periodNs_)
+            if ((currTimeNs - startTimeNs_) >= periodNs_)
             {
                 return true;
             }
@@ -43,9 +44,17 @@ namespace idk
             periodNs_ = 1000000000 / rateHz;
         }
 
+        float getExpiryAlpha()
+        {
+            uint64_t currTimeNs = idk::platform::GetSysTimeNs();
+            float alpha = float(currTimeNs - startTimeNs_) / float(periodNs_);
+            return idk::clamp(alpha, 0.0f, 1.0f);
+        }
+
         template <typename T> T getPeriodNs() { return static_cast<T>(periodNs_); }
         template <typename T> T getPeriodUs() { return static_cast<T>(periodNs_) / T(1000); }
         template <typename T> T getPeriodMs() { return getPeriodUs<T>() / T(1000); }
+        template <typename T> T getPeriodSec() { return getPeriodMs<T>() / T(1000); }
     };
 }
 

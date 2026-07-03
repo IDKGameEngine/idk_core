@@ -30,3 +30,22 @@ const glm::mat4& idk::Camera::getProj() const
     }
     return proj_;
 }
+
+
+idk::Camera idk::Camera::getMixed(idk::Camera &start, idk::Camera &target, float alpha)
+{
+    idk::Camera result = start;
+
+    glm::vec3 startPos = start.transform_.GetPosition();
+    glm::vec3 targetPos = target.transform_.GetPosition();
+    glm::vec3 resultPos = glm::mix(startPos, targetPos, alpha);
+    result.transform_.SetPosition(resultPos);
+
+    glm::quat startRot = start.transform_.GetRotation();
+    glm::quat targetRot = target.transform_.GetRotation();
+    glm::quat finalRot = glm::slerp(startRot, targetRot, alpha);
+    result.transform_.SetRotation(finalRot);
+
+    return result;
+}
+

@@ -11,42 +11,33 @@
 namespace idk
 {
     template <typename T>
-    class PortReader;
-    
+    class PortReader
+    {
+    private:
+        uint32_t addr;
+
+    public:
+        PortReader()
+        {
+            (void)addr;
+        }
+
+        bool read(T &data)
+        {
+
+        }
+    };
+
     template <typename T>
-    class PortWriter;
+    class PortWriter
+    {
+    protected:
+
+    public:
+        bool write(const T &data)
+        {
+
+        }
+
+    };
 }
-
-
-template <typename T>
-class idk::PortReader
-{
-private:
-    uint32_t addr;
-
-public:
-    PortReader()
-    {
-        (void)addr;
-    }
-
-    bool read(T &data)
-    {
-
-    }
-};
-
-
-template <typename T>
-class idk::PortWriter
-{
-protected:
-
-public:
-    bool write(const T &data)
-    {
-
-    }
-
-};
-

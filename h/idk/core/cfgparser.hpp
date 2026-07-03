@@ -22,14 +22,13 @@ public:
     class TreeLeaf;
     class TreeNode;
 
-    CfgParser(const char *path);
-    const TreeNode &operator[](const char *key) const;
+    CfgParser();
+    void load(const char *path);
     void print();
+    const TreeNode &operator[](const char *key) const;
 
 private:
-
     TreeNode *rootNode_;
-    TreeNode *cfgNode_;
     std::vector<char> mBuf;
     size_t mIdx, mLine, mCol;
 
@@ -48,6 +47,7 @@ private:
     void _parse(TreeNode*);
     void _parse_section(TreeNode*);
     void _print(TreeNode*);
+
 };
 
 

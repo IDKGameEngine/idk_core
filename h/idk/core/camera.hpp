@@ -25,6 +25,8 @@ public:
     const glm::mat4 &getProj() const;
     glm::mat4 getProjView() const { return getProj() * getView(); }
 
+    static idk::Camera getMixed(idk::Camera &start, idk::Camera &target, float alpha);
+
 private:
     Transform transform_;
 

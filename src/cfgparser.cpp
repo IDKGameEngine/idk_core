@@ -91,11 +91,21 @@ std::string CfgParser::_readTo(char stop)
 }
 
 
-CfgParser::CfgParser(const char *path)
-:   rootNode_(new TreeNode("__global__")),
-    cfgNode_(nullptr),
-    mIdx(0), mLine(0), mCol(0)
+CfgParser::CfgParser()
+:   rootNode_(new TreeNode("__root__"))
 {
+
+}
+
+void CfgParser::load(const char *path)
+{
+    VLOG_INFO("[CfgParser::load] \"{}\"", path);
+
+    mBuf.clear();
+    mIdx = 0;
+    mLine = 0;
+    mCol = 0;
+
     idk::FileLoader loader(path);
     idk::FileReader reader(path);
 
@@ -115,15 +125,6 @@ CfgParser::CfgParser(const char *path)
     mCol  = 1;
 
     _parse(rootNode_);
-
-    for (auto &[key, nd]: *rootNode_)
-    {
-        if (key == "config")
-        {
-            cfgNode_ = reinterpret_cast<TreeNode*>(nd);
-            break;
-        }
-    }
 }
 
 
@@ -192,12 +193,7 @@ void CfgParser::_parse_section(TreeNode *curr)
 
 const CfgParser::TreeNode &CfgParser::operator[](const char *searchKey) const
 {
-    static TreeLeaf dummy("");
-    if (cfgNode_ == nullptr)
-    {
-        return *reinterpret_cast<TreeNode*>(&dummy);
-    }
-    return (*cfgNode_)[searchKey];
+    return (*rootNode_)[searchKey];
 }
 
 const CfgParser::TreeNode &CfgParser::TreeNode::operator[](const char *searchKey) const
