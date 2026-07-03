@@ -111,7 +111,7 @@ void CfgParser::load(const char *path)
     auto  *src = static_cast<const char*>(reader.getData());
     auto  *end = src + reader.getSize();
 
-    while (*src && (src < end))
+    while ((src < end) && *src)
     {
         char ch = *(src++);
         if (ch == ' ')

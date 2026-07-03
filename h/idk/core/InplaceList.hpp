@@ -30,6 +30,15 @@ namespace idk
             }
         }
 
+        template <typename... Args>
+        void emplace(Args &&...args)
+        {
+            if (mTail < mEnd)
+            {
+                new (mTail++) T(std::forward<Args>(args)...);
+            }
+        }
+
         void pop()
         {
             if (mTail > mBase)
@@ -51,6 +60,6 @@ namespace idk
         };
 
         Iterator begin() { return Iterator(mBase); }
-        Iterator end()   { return Iterator(mEnd); }
+        Iterator end()   { return Iterator(mTail); }
     };
 }
