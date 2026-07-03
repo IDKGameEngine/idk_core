@@ -3,23 +3,11 @@
 #include "idk/core/log.hpp"
 
 #include <cstring>
-#include <map>
-
-static std::map<std::string, idk::FileLoader*> file_loaders_;
-
-static idk::FileLoader *getFileLoader(const char *path)
-{
-    IDK_ASSERT(file_loaders_.contains(path), "File not loaded \"{}\"", path);
-    return file_loaders_[path];
-}
 
 
-
-idk::FileLoader::FileLoader(const char *path)
+idk::FileReader::FileReader(const char *path)
 :   path_(path), data_(nullptr), size_(0)
 {
-    IDK_ASSERT(!file_loaders_.contains(path), "File already loaded \"{}\"", path);
-
     std::FILE *fh = std::fopen(path, "r");
     IDK_ASSERT(fh!=NULL, "Failure loading \"{}\"", path);
 
@@ -31,26 +19,35 @@ idk::FileLoader::FileLoader(const char *path)
     IDK_ASSERT(size_==std::fread(data_, 1, size_, fh), "Failure loading \"{}\"", path);
     std::fclose(fh);
 
-    file_loaders_[path] = this;
-    VLOG_INFO("[FileLoader::FileLoader] Success loading \"{}\"", path);
+    VLOG_INFO("[FileReader::FileReader] Success loading \"{}\"", path);
 }
 
 
-idk::FileLoader::~FileLoader()
+idk::FileReader::~FileReader()
 {
     if (data_)
     {
-        IDK_ASSERT(file_loaders_.contains(path_), "This should never happen");
-        file_loaders_.erase(path_);
         std::free(data_);
     }
 }
 
 
 
-idk::FileReader::FileReader(const char *path)
-:   loader_(getFileLoader(path))
-{
 
+idk::FileWriter::FileWriter(const char *path)
+:   path_(path),
+    fh_(std::fopen(path, "w"))
+{
+    IDK_ASSERT(fh_ != NULL, "Failure creating FileWriter \"{}\"", path);
+    VLOG_INFO("[FileWriter::FileWriter] Success opening \"{}\"", path);
 }
 
+idk::FileWriter::~FileWriter()
+{
+    std::fclose(fh_);
+}
+
+void idk::FileWriter::write(const void *src, size_t size)
+{
+    std::fwrite(src, 1, size, fh_);
+}

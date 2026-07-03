@@ -106,7 +106,6 @@ void CfgParser::load(const char *path)
     mLine = 0;
     mCol = 0;
 
-    idk::FileLoader loader(path);
     idk::FileReader reader(path);
 
     auto  *src = static_cast<const char*>(reader.getData());

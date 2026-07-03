@@ -1,35 +1,38 @@
 #pragma once
 
 #include "idk/core/types.hpp"
+#include <cstdio>
 
 namespace idk
 {
-    class FileLoader;
     class FileReader;
+    class FileWriter;
 }
 
 
-class idk::FileLoader: public idk::NonCopyable, public idk::NonMovable
+class idk::FileReader: public idk::NonCopyable, public idk::NonMovable
 {
 private:
-    friend class idk::FileReader;
     const char *path_;
     void  *data_;
     size_t size_;
 
 public:
-    FileLoader(const char *filepath);
-    ~FileLoader();
+    FileReader(const char *filepath);
+    ~FileReader();
+    const void *getData() const { return data_; }
+    size_t getSize() const { return size_; }
 };
 
 
-class idk::FileReader
+class idk::FileWriter: public idk::NonCopyable, public idk::NonMovable
 {
 private:
-    const idk::FileLoader *loader_;
+    const char *path_;
+    std::FILE *fh_;
 
 public:
-    FileReader(const char *filepath);
-    const void *getData() const { return loader_->data_; }
-    size_t getSize() const { return loader_->size_; }
+    FileWriter(const char *filepath);
+    ~FileWriter();
+    void write(const void *src, size_t size);
 };

@@ -1,5 +1,7 @@
 #pragma once
 
+#include <format>
+
 #define IDK_DEBUG
 
 #ifdef IDK_DEBUG

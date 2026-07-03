@@ -1,12 +1,13 @@
 #include "idk/core/engine.hpp"
 #include "idk/core/stdmem.hpp"
 #include "idk/core/stdstr.hpp"
+#include "idk/core/log.hpp"
 
 static void ServiceRaiiFunc(const char **name)
 {
     static char filepath[256];
     idk_memset(filepath, '\0', sizeof(filepath));
-    snprintf(filepath, sizeof(filepath), "data/%s.cfg", *name);
+    snprintf(filepath, sizeof(filepath), "%s.cfg", *name);
     idk::IEngine::getCfgParser().load(filepath);
 }
 
