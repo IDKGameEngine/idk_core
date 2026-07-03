@@ -8,29 +8,33 @@ namespace idk
     class InplaceList : public idk::NonCopyable, public idk::NonMovable
     {
     private:
-        size_t mSize;
-        T mData[MAX_SIZE];
+        T *mBase;
+        T *mTail;
+        T *mEnd;
+        alignas(T) uint8_t mData[sizeof(T) * MAX_SIZE];
 
     public:
         InplaceList()
-        :   mSize(0)
+        :   mBase(reinterpret_cast<T*>(&mData[0])),
+            mTail(mBase),
+            mEnd(mBase + MAX_SIZE)
         {
 
         }
 
         void push(const T &value)
         {
-            if (mSize < MAX_SIZE)
+            if (mTail < mEnd)
             {
-                new (&mData[mSize++]) T(value);
+                new (mTail++) T(value);
             }
         }
 
         void pop()
         {
-            if (mSize > 0)
+            if (mTail > mBase)
             {
-                mData[--mSize].~T();
+                (--mTail)->~T();
             }
         }
 
@@ -46,7 +50,7 @@ namespace idk
             T &operator*() { return *mPtr; };
         };
 
-        Iterator begin() { return Iterator(mData); }
-        Iterator end()   { return Iterator(mData + mSize); }
+        Iterator begin() { return Iterator(mBase); }
+        Iterator end()   { return Iterator(mEnd); }
     };
 }

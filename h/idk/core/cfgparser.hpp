@@ -101,20 +101,10 @@ public:
         return reinterpret_cast<const TreeLeaf*>(this)->getValue();
     }
 
-    int32_t getValueI32() const
-    {
-        return atoi(getValue());
-    }
-
-    uint64_t getValueU64() const
-    {
-        return atoll(getValue());
-    }
-
-    double getValueF64() const
-    {
-        return atof(getValue());
-    }
+    int32_t getValueI32() const { return atoi(getValue()); }
+    uint16_t getValueU16() const { return atol(getValue()); }
+    uint64_t getValueU64() const { return atoll(getValue()); }
+    double getValueF64() const { return atof(getValue()); }
 
     const TreeNode &operator[](const char *key) const;
 
