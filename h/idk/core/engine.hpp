@@ -28,6 +28,9 @@ namespace idk
             idk::IdType getTypeId() const { return mTypeId; }
             const char *getName() const { return &mName[0]; }
         };
+
+        #define IDK_SERVICE_CTOR(DerivedType) idk::core::Service(#DerivedType, idk_typeid<DerivedType>())
+
     }
 
     class EngineConfig
@@ -38,7 +41,7 @@ namespace idk
     };
 
 
-    class IEngine: public idk::NonCopyable, public idk::NonMovable
+    class IEngine: public idk::NonMobile
     {
     protected:
         std::vector<core::Service*> srvs_;
@@ -52,15 +55,25 @@ namespace idk
         virtual void shutdown() = 0;
         virtual void update() = 0;
 
+        // template <typename ServiceType, typename... Args>
+        // void addService(Args&&... args)
+        // {
+            
+        // }
+
         template <typename T>
         T *getService()
         {
-            for (auto *srv: srvs_)
+            for (idk::core::Service *srv: srvs_)
             {
                 if (srv->getTypeId() == idk_typeid<T>())
                 {
                     return reinterpret_cast<T*>(srv);
                 }
+                // if (T *ptr = dynamic_cast<T*>(srv))
+                // {
+                //     return ptr;
+                // }
             }
             return nullptr;
         }
