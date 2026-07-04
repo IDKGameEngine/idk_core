@@ -2,6 +2,7 @@
 
 #include "idk/core/types.hpp"
 #include "idk/core/cfgparser.hpp"
+#include "idk/core/periodic_timer.hpp"
 #include "idk/core/raii.hpp"
 #include <vector>
 
