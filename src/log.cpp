@@ -91,6 +91,7 @@ void idk::vnlog(idk::LogType type, const char *title, const char *fmt, ...)
 
         if (type == LogType::FATAL)
         {
+            fflush((std::FILE*)vl_fh_);
             exit(1);
         }
     }
