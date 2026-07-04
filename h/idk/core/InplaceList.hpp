@@ -47,6 +47,16 @@ namespace idk
             }
         }
 
+        size_t size() const { return mTail - mBase; }
+
+        T &operator[](int i) { return mBase[i]; }
+        T &front() { return (*this)[0]; }
+        T &back() { return (*this)[size() - 1]; }
+
+        const T &operator[](int i) const { return mBase[i]; }
+        const T &front() const { return (*this)[0]; }
+        const T &back() const { return (*this)[size() - 1]; }
+
         struct Iterator
         {
             T *mPtr;
@@ -61,5 +71,6 @@ namespace idk
 
         Iterator begin() { return Iterator(mBase); }
         Iterator end()   { return Iterator(mTail); }
+
     };
 }
