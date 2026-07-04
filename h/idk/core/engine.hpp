@@ -23,7 +23,6 @@ namespace idk
         public:
             Service(const char *name, idk::IdType typeId);
             virtual ~Service() = default;
-            virtual void startup(IEngine*) = 0;
             virtual void update(IEngine*) = 0;
             virtual void shutdown(IEngine*) = 0;
             idk::IdType getTypeId() const { return mTypeId; }
