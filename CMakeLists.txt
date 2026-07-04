@@ -24,7 +24,7 @@ target_sources(
     "${CMAKE_CURRENT_SOURCE_DIR}/src/cfgparser.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/file.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/log.cpp"
-    "${CMAKE_CURRENT_SOURCE_DIR}/src/port.cpp"
+    "${CMAKE_CURRENT_SOURCE_DIR}/src/Message.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/Service.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/threadpool.cpp"
     "${CMAKE_CURRENT_SOURCE_DIR}/src/transform.cpp"

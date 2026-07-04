@@ -18,8 +18,6 @@ idk::FileReader::FileReader(const char *path)
     std::fseek(fh, 0, SEEK_SET);
     IDK_ASSERT(size_==std::fread(data_, 1, size_, fh), "Failure loading \"{}\"", path);
     std::fclose(fh);
-
-    VLOG_INFO("[FileReader::FileReader] Success loading \"{}\"", path);
 }
 
 
@@ -39,7 +37,6 @@ idk::FileWriter::FileWriter(const char *path)
     fh_(std::fopen(path, "w"))
 {
     IDK_ASSERT(fh_ != NULL, "Failure creating FileWriter \"{}\"", path);
-    VLOG_INFO("[FileWriter::FileWriter] Success opening \"{}\"", path);
 }
 
 idk::FileWriter::~FileWriter()

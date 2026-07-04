@@ -99,8 +99,6 @@ CfgParser::CfgParser()
 
 void CfgParser::load(const char *path)
 {
-    VLOG_INFO("[CfgParser::load] \"{}\"", path);
-
     mBuf.clear();
     mIdx = 0;
     mLine = 0;
