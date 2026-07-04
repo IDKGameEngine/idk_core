@@ -16,6 +16,6 @@ idk::core::Service::Service(const char *name, idk::IdType typeId)
     mTypeId(typeId),
     mCfg(IEngine::getCfgParser()[name])
 {
-    idk_strncpy(&mName[0], name, MAX_NAME_LENGTH);
+    idk_strncpy(&mName[0], name, MAX_NAME_LENGTH-1);
     mName[MAX_NAME_LENGTH - 1] = '\0';
 }

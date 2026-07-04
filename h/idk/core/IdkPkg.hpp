@@ -22,7 +22,7 @@ namespace idk::core
         :   magic_(MAGIC),
             size_(size)
         {
-            idk_strncpy(name_, name, MAX_NAME_LENGTH);
+            idk_strncpy(name_, name, MAX_NAME_LENGTH-1);
             name_[MAX_NAME_LENGTH - 1] = '\0';
         }
     };
