@@ -1,4 +1,4 @@
-#include "idk/core/log.hpp"
+#include "idk_core/log.hpp"
 #include "ansi.hpp"
 
 #include <cstdarg>

@@ -1,4 +1,4 @@
-#include "idk/core/camera.hpp"
+#include "idk_core/camera.hpp"
 
 
 

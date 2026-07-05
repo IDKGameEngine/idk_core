@@ -1,8 +1,8 @@
-#include "idk/core/Service.hpp"
-#include "idk/core/Engine.hpp"
-#include "idk/core/stdmem.hpp"
-#include "idk/core/stdstr.hpp"
-#include "idk/core/log.hpp"
+#include "idk_core/Service.hpp"
+#include "idk_core/Engine.hpp"
+#include "idk_core/stdmem.hpp"
+#include "idk_core/stdstr.hpp"
+#include "idk_core/log.hpp"
 
 static void ServiceRaiiFunc(const char **name)
 {

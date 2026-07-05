@@ -1,9 +1,9 @@
 #pragma once
 
-#include "idk/core/Platform.hpp"
-#include "idk/core/math.hpp"
-#include "idk/core/metric.hpp"
-#include "idk/core/log.hpp"
+#include "idk_core/Platform.hpp"
+#include "idk_core/math.hpp"
+#include "idk_core/metric.hpp"
+#include "idk_core/log.hpp"
 
 namespace idk
 {

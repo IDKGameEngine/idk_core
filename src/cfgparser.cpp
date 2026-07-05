@@ -1,6 +1,6 @@
-#include "idk/core/cfgparser.hpp"
-#include "idk/core/file.hpp"
-#include "idk/core/log.hpp"
+#include "idk_core/cfgparser.hpp"
+#include "idk_core/file.hpp"
+#include "idk_core/log.hpp"
 #include <cstring>
 
 using namespace idk;

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "idk/core/stdmem.hpp"
+#include "idk_core/stdmem.hpp"
 
 namespace idk::core
 {

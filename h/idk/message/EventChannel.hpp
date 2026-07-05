@@ -1,10 +1,10 @@
 #pragma once
 
 #include "idk/message/MessageRxTx.hpp"
-#include "idk/core/assert.hpp"
-#include "idk/core/stdmem.hpp"
-#include "idk/core/types.hpp"
-#include "idk/core/InplaceList.hpp"
+#include "idk_core/assert.hpp"
+#include "idk_core/stdmem.hpp"
+#include "idk_core/types.hpp"
+#include "idk_core/InplaceList.hpp"
 
 
 namespace idk
