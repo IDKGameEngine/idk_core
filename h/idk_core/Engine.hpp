@@ -20,7 +20,6 @@ namespace idk
         EngineConfig() {  }
     };
 
-
     class IEngine: public idk::NonMobile
     {
     protected:
